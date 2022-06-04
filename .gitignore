@@ -1,0 +1,94 @@
+################
+###  Ignore  ###
+################
+
+##################################################
+###   Root Folders                             ###
+##################################################
+# General root folders
+
+##################################################
+###   General Folders                          ###
+##################################################
+# Internal local folders
+.vs/
+.internal/
+
+# Build output
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+
+##################################################
+###   NuGet                                    ###
+##################################################
+# NuGet Packages
+*.nupkg
+# NuGet Symbol Packages
+*.snupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/[Pp]ackages/repositories.config
+# NuGet v3's project.json files produces more ignorable files
+*.nuget.props
+*.nuget.targets
+
+# More folders
+_ReSharper*/
+
+##################################################
+###   File Extensions                          ###
+##################################################
+# Generally forbid assemblies
+*.dll
+*.pdb
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache files
+# files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!?*.[Cc]ache/
+
+# Extension files
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+*.csproj.user
+*.dotCover
+
+##################################################
+###   Specific filenames                       ###
+##################################################
+# Specific files
+# Add a row like this, without the hashtag
+# /log.text
+
+
+
+################
+###  Allow   ###
+################
+# Repository specific rules
+# Add a row like this, without the hashtag
+# !/RestSharp.dll

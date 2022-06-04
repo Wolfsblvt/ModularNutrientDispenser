@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Modular Nutrient Dispenser</name>
+  <author>Wolfsblvt,Primaeval</author>
+  <url>TODO: Github URL</url>
+  <packageId>Wolfsblvt.ModularNutrientDispenser</packageId>
+  <supportedVersions>
+    <li>1.3</li>
+  </supportedVersions>
+
+  <description>
+    Sample description.
+
+    Which spans multiple lines. Is also includes whitespace, so unless you want ugly indentation on the workshop, you need to have it un-beautified like this.
+  </description>
+
+  <modDependencies>
+    <!-- Using hugslib as an example here. -->
+    <li>
+      <packageId>UnlimitedHugs.HugsLib</packageId>
+      <displayName>HugsLib</displayName>
+      <downloadUrl>https://github.com/UnlimitedHugs/RimworldHugsLib/releases/latest</downloadUrl>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/818773962</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>UnlimitedHugs.HugsLib</li>
+  </loadAfter>
+
+</ModMetaData>
