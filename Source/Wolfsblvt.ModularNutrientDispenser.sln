@@ -11,6 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "About", "About", "{D5300D5D
 		..\About\Preview.png = ..\About\Preview.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Patches", "Patches", "{8AEDC097-E659-48C4-B554-7ECCE3FB0AF2}"
+	ProjectSection(SolutionItems) = preProject
+		..\Patches\Vanilla_Patches.xml = ..\Patches\Vanilla_Patches.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

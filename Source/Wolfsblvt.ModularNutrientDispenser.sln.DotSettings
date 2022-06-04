@@ -1,0 +1,10 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/WRAP_LINES/@EntryValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/BlankLineAfterProcessingInstructions/@EntryValue">False</s:Boolean>
+	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/INDENT_SIZE/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/LINE_FEED_AT_FILE_END/@EntryValue">True</s:Boolean>
+	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/TAB_WIDTH/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/USE_INDENT_FROM_VS/@EntryValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/WRAP_LINES/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/PredefinedNamingRules/=Parameters/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aaBb"&gt;&lt;ExtraRule Prefix="__" Suffix="" Style="aaBb" /&gt;&lt;/Policy&gt;</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/PredefinedNamingRules/=TypesAndNamespaces/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb"&gt;&lt;ExtraRule Prefix="" Suffix="" Style="AaBb_AaBb" /&gt;&lt;/Policy&gt;</s:String></wpf:ResourceDictionary>

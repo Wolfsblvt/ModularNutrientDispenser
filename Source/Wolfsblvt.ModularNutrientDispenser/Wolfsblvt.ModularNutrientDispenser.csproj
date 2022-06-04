@@ -14,8 +14,8 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -31,8 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HugsLib">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\818773962\Assemblies\HugsLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -49,6 +57,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Building_ExtendableNutrientPasteDispenser.cs" />
+    <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="StartupHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
