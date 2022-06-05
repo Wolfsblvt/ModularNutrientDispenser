@@ -5,16 +5,7 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfsblvt.ModularNutrientDispenser", "Wolfsblvt.ModularNutrientDispenser\Wolfsblvt.ModularNutrientDispenser.csproj", "{07EEF3E9-8C2E-4816-BD39-892751BBFCA5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "About", "About", "{D5300D5D-35A9-44D6-AFD2-571C8322A467}"
-	ProjectSection(SolutionItems) = preProject
-		..\About\About.xml = ..\About\About.xml
-		..\About\Preview.png = ..\About\Preview.png
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Patches", "Patches", "{8AEDC097-E659-48C4-B554-7ECCE3FB0AF2}"
-	ProjectSection(SolutionItems) = preProject
-		..\Patches\Vanilla_Patches.xml = ..\Patches\Vanilla_Patches.xml
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "..\Resources.csproj", "{BB008AEA-D783-42A5-B2C1-48FCD902C923}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +17,10 @@ Global
 		{07EEF3E9-8C2E-4816-BD39-892751BBFCA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07EEF3E9-8C2E-4816-BD39-892751BBFCA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07EEF3E9-8C2E-4816-BD39-892751BBFCA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB008AEA-D783-42A5-B2C1-48FCD902C923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB008AEA-D783-42A5-B2C1-48FCD902C923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB008AEA-D783-42A5-B2C1-48FCD902C923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB008AEA-D783-42A5-B2C1-48FCD902C923}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
