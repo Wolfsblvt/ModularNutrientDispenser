@@ -5,14 +5,22 @@ using Verse;
 
 namespace Wolfsblvt.ModularNutrientDispenser
 {
+    [StaticConstructorOnStartup]
     public static class HarmonyPatches
     {
+        static HarmonyPatches()
+        {
+            var harmony = new Harmony("wolfsblvt.modularnutrientdispenser");
+            harmony.PatchAll();
+        }
+        
         [UsedImplicitly]
-        [HarmonyPatch(typeof(ThingListGroupHelper), nameof(ThingListGroupHelper.Includes))]
-        public static class ThingListGroupHelper_Includes_Patch
+        [HarmonyPatch(typeof(ThingListGroupHelper))]
+        public static class ThingListGroupHelper_Patch
         {
             [HarmonyPrefix]
-            public static bool Prefix_FoodSourceDispenserFix(ref bool __result, ThingRequestGroup group, ThingDef def)
+            [HarmonyPatch(nameof(ThingListGroupHelper.Includes))]
+            public static bool Prefix_Includes_FoodSourceDispenserFix(ref bool __result, ThingRequestGroup group, [NotNull] ThingDef def)
             {
                 // We are copying the vanilla logic for both food source checks in that switch case.
                 // The only change is to use IsAssignableFrom to allow inherited types of the nutrient paste dispenser

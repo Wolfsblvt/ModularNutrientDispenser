@@ -6,4 +6,13 @@
       <thingClass>Wolfsblvt.ModularNutrientDispenser.Building_ExtendableNutrientPasteDispenser</thingClass>
     </value>
   </Operation>
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/tickerType</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]</xpath>
+      <value>
+        <tickerType>Rare</tickerType>
+      </value>
+    </nomatch>
+  </Operation>
 </Patch>
