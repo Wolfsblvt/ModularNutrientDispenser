@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using JetBrains.Annotations;
@@ -44,6 +45,9 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
 
             // As we are not modifying much, only replacing a few IL statement with a few more, we can easily just do a general foreach
             // and replace the relevant parts without having to keep track of where we are exactly.
+            
+            // Caching reflection results
+            FieldInfo f1 = null, f2 = null;
 
             var removeNext = 0;
 
@@ -51,10 +55,10 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
             {
                 if (removeNext > 0 && removeNext-- > int.MinValue)
                     continue;
-
+                
                 // Replace all direct meal references
                 //IL_0023: ldsfld class Verse.ThingDef RimWorld.ThingDefOf::MealNutrientPaste
-                var isPasteMealReference = inst.LoadsField(AccessTools.Field(typeof(ThingDefOf), nameof(ThingDefOf.MealNutrientPaste)));
+                var isPasteMealReference = inst.LoadsField(f1 ?? (f1 = AccessTools.Field(typeof(ThingDefOf), nameof(ThingDefOf.MealNutrientPaste))));
                 if (isPasteMealReference)
                 {
                     //IL_00b5: ldloc.0
@@ -70,7 +74,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
                 //IL_00b5: ldloc.0
                 //IL_00b6: ldfld class RimWorld.CompPowerTrader RimWorld.Building_NutrientPasteDispenser::powerComp
                 //IL_00bb: callvirt instance bool RimWorld.CompPowerTrader::get_PowerOn()
-                var isPowerCompReference = inst.LoadsField(AccessTools.Field(typeof(Building_NutrientPasteDispenser), nameof(Building_NutrientPasteDispenser.powerComp)));
+                var isPowerCompReference = inst.LoadsField(f2 ?? (f2 = AccessTools.Field(typeof(Building_NutrientPasteDispenser), nameof(Building_NutrientPasteDispenser.powerComp))));
                 if (isPowerCompReference)
                 {
                     //IL_00b5: ldloc.0
