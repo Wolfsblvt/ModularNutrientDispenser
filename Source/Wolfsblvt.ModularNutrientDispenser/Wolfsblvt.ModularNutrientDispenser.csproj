@@ -55,7 +55,10 @@
   <ItemGroup>
     <Compile Include="Building_ExtendableNutrientPasteDispenser.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />
+    <Compile Include="Patches\Building_NutrientPasteDispenser_Patch.cs" />
     <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="Patches\FoodUtility_Patch.cs" />
+    <Compile Include="Patches\ThingListGroupHelper_Patch.cs" />
     <Compile Include="StartupHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
