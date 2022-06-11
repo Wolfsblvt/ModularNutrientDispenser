@@ -3,7 +3,7 @@
   <Operation Class="PatchOperationReplace">
     <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/thingClass</xpath>
     <value>
-      <thingClass>Wolfsblvt.ModularNutrientDispenser.Building_ExtendableNutrientPasteDispenser</thingClass>
+      <thingClass>Wolfsblvt.ModularNutrientDispenser.Building_ExtendableDispenser</thingClass>
     </value>
   </Operation>
   <Operation Class="PatchOperationConditional">
