@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
@@ -21,6 +22,8 @@ namespace Wolfsblvt.ModularNutrientDispenser
     [UsedImplicitly]
     public class Building_ExtendableDispenser : Building_NutrientPasteDispenser
     {
+        public CompDispenser dispenserComp;
+
         [NotNull] protected readonly HashSet<ThingDef> CurrentlyContainedMats = new HashSet<ThingDef>();
 
         /// <summary>[PERSISTENT] The value of already processed mats that is readily available</summary>
@@ -39,17 +42,25 @@ namespace Wolfsblvt.ModularNutrientDispenser
         protected float MaxRawMatPull = 0.5f; // Hardcoded at the moment. Will come out of the def with a stat later
 
         /// <summary>[DEF] Defined in the def will be the thing that can be dispensed. Strongly connected to <see cref="StatForDispensable" />.</summary>
-        public override ThingDef DispensableDef => ThingDefOf.MealNutrientPaste;
+        public override ThingDef DispensableDef => dispenserComp.Props.dispensableDef;
 
         /// <summary>[DEF] The stat that will be used as a material base.</summary>
-        protected StatDef StatForDispensable => StatDefOf.Nutrition;
+        protected StatDef StatForDispensable => dispenserComp.Props.statForDispensable;
 
         /// <summary>[DEF] The conversion rate how much of the stat from the raw material will be converted into the stat of the target material.</summary>
-        protected float MatConversion => 3.0f; // Hardcoded at the moment. Will come out of the def with a stat later
+        protected float MatConversion => dispenserComp.Props.matConversion;
 
         protected virtual float DispensableMatRawCost => DispensableMatResultCost / MatConversion;
         protected virtual float DispensableMatResultCost => DispensableDef.GetStatValueAbstract(StatForDispensable);
         protected virtual int DispensableAvailable => (int)Mathf.Floor(ProcessedMat / DispensableMatResultCost);
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            dispenserComp = GetComp<CompDispenser>();
+            if (dispenserComp == null)
+                throw new Exception("Dispensable comp needs to be defined for all dispenser buildings.");
+        }
 
         [CanBeNull]
         public override Thing TryDispenseFood()

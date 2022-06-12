@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Patch>
+  <!-- Replace the original class of the vanilla dispenser building-->
   <Operation Class="PatchOperationReplace">
     <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/thingClass</xpath>
     <value>
       <thingClass>Wolfsblvt.ModularNutrientDispenser.Building_ExtendableDispenser</thingClass>
     </value>
   </Operation>
+  <!-- Add a the rare tick to the dispenser building -->
   <Operation Class="PatchOperationConditional">
     <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/tickerType</xpath>
     <nomatch Class="PatchOperationAdd">
@@ -14,5 +16,29 @@
         <tickerType>Rare</tickerType>
       </value>
     </nomatch>
+  </Operation>
+  <!-- Add our dispensable comp class to the vanilla dispenser building, with working settings for that -->
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationConditional">
+        <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/comps</xpath>
+        <nomatch Class="PatchOperationAdd">
+          <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]</xpath>
+          <value>
+            <comps></comps>
+          </value>
+        </nomatch>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/comps</xpath>
+        <value>
+          <li Class="Wolfsblvt.ModularNutrientDispenser.CompProperties_Dispensable">
+            <dispensableDef>MealNutrientPaste</dispensableDef>
+            <statForDispensable>Nutrition</statForDispensable>
+            <matConversion>3.0</matConversion>
+          </li>
+        </value>
+      </li>
+    </operations>
   </Operation>
 </Patch>

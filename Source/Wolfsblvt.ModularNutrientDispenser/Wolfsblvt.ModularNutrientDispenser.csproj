@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building_ExtendableDispenser.cs" />
+    <Compile Include="CompDispenser.cs" />
+    <Compile Include="CompProperties_Dispenser.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Patches\Building_NutrientPasteDispenser_Patch.cs" />
