@@ -147,7 +147,7 @@ namespace Wolfsblvt.ModularNutrientDispenser
             // Contains 2/10 processed stat. (+1 per day)
             sb.Append($"Contains {ProcessedMat.ToStringDecimalIfSmall()} / {ProcessedMatCapacity} {StatForDispensable.label}.");
             if (CanProcess)
-                sb.Append($" (+{RawMatPullPerDay.ToStringDecimalIfSmall()} per day)");
+                sb.Append($" (+{(RawMatPullPerDay * MatConversion).ToStringDecimalIfSmall()} per day)");
             sb.AppendLine();
 
             // Available dispensable items: 3 (+3.3 per day)
