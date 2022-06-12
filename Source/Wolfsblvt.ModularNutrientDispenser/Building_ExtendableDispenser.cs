@@ -30,19 +30,19 @@ namespace Wolfsblvt.ModularNutrientDispenser
         protected float RawMatPullPower;
 
         /// <summary>[STAT] The maximum capacity of the processed material. A stat that can be modified.</summary>
-        protected float ProcessedMatCapacity => 10f; // Hardcoded at the moment. Will come out of the def with a stat later
+        protected float ProcessedMatCapacity = 10f; // Hardcoded at the moment. Will come out of the def with a stat later
 
         /// <summary>[STAT] The amount of the mat that can be pulled in per day. Will be split onto each <see cref="TickRare" />. A stat that can be modified.</summary>
-        protected float RawMatPullPerDay => 1f; // Hardcoded at the moment. Will come out of the def with a stat later
+        protected float RawMatPullPerDay = 1f; // Hardcoded at the moment. Will come out of the def with a stat later
 
         /// <summary>[STAT] The Maximum amount of the mat that can be pulled in per <see cref="TickRare" />. A stat that can be modified.</summary>
-        protected float MaxRawMatPull => 0.5f; // Hardcoded at the moment. Will come out of the def with a stat later
-
-        /// <summary>[DEF] The stat that will be used as a material base.</summary>
-        protected StatDef StatForDispensable => StatDefOf.Nutrition;
+        protected float MaxRawMatPull = 0.5f; // Hardcoded at the moment. Will come out of the def with a stat later
 
         /// <summary>[DEF] Defined in the def will be the thing that can be dispensed. Strongly connected to <see cref="StatForDispensable" />.</summary>
         public override ThingDef DispensableDef => ThingDefOf.MealNutrientPaste;
+
+        /// <summary>[DEF] The stat that will be used as a material base.</summary>
+        protected StatDef StatForDispensable => StatDefOf.Nutrition;
 
         /// <summary>[DEF] The conversion rate how much of the stat from the raw material will be converted into the stat of the target material.</summary>
         protected float MatConversion => 3.0f; // Hardcoded at the moment. Will come out of the def with a stat later
@@ -137,6 +137,43 @@ namespace Wolfsblvt.ModularNutrientDispenser
                 sb.AppendLine($"Pull power: {RawMatPullPower}");
 
             return sb.ToString().TrimEndNewlines();
+        }
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            foreach (var gizmo in base.GetGizmos())
+                yield return gizmo;
+
+            if (!Prefs.DevMode)
+                yield break;
+
+            if (Prefs.DevMode && ProcessedMat > 0)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: Empty & Clean",
+                    action = () => EmptyAndClean()
+                };
+            }
+
+            if (Prefs.DevMode && ProcessedMat < ProcessedMatCapacity)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: Fill",
+                    action = () => ProcessedMat = ProcessedMatCapacity
+                };
+            }
+        }
+
+        public virtual bool EmptyAndClean()
+        {
+            // We reset the progress and clear the tracking of any contamination
+            ProcessedMat = 0;
+            RawMatPullPower = 0;
+            CurrentlyContainedMats.Clear();
+
+            return true;
         }
 
         protected virtual void RegisterIngredients([NotNull] Thing thing)
