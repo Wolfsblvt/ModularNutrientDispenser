@@ -45,7 +45,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
 
             // As we are not modifying much, only replacing a few IL statement with a few more, we can easily just do a general foreach
             // and replace the relevant parts without having to keep track of where we are exactly.
-            
+
             // Caching reflection results
             FieldInfo f1 = null, f2 = null;
 
@@ -55,7 +55,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
             {
                 if (removeNext > 0 && removeNext-- > int.MinValue)
                     continue;
-                
+
                 // Replace all direct meal references
                 //IL_0023: ldsfld class Verse.ThingDef RimWorld.ThingDefOf::MealNutrientPaste
                 var isPasteMealReference = inst.LoadsField(f1 ?? (f1 = AccessTools.Field(typeof(ThingDefOf), nameof(ThingDefOf.MealNutrientPaste))));
@@ -64,7 +64,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
                     //IL_00b5: ldloc.0
                     //IL_00b6: ldfld class RimWorld.ThingDef RimWorld.Building_NutrientPasteDispenser::DispensableDef
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(Building_NutrientPasteDispenser),nameof(Building_NutrientPasteDispenser.DispensableDef)));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(Building_NutrientPasteDispenser), nameof(Building_NutrientPasteDispenser.DispensableDef)));
 
                     // We are not using the original instruction for that meal
                     continue;
@@ -80,7 +80,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
                     //IL_00b5: ldloc.0
                     //IL_00b6: bool RimWorld.Building_NutrientPasteDispenser::CanDispenseNow
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(Building_NutrientPasteDispenser), nameof(Building_NutrientPasteDispenser.CanDispenseNow)));
-                        
+
                     removeNext = 1;
                     continue;
                 }

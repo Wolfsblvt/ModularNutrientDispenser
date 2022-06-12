@@ -24,7 +24,8 @@ namespace Wolfsblvt.ModularNutrientDispenser
     {
         public CompDispenser dispenserComp;
 
-        [NotNull] protected readonly HashSet<ThingDef> CurrentlyContainedMats = new HashSet<ThingDef>();
+        [NotNull]
+        protected readonly HashSet<ThingDef> CurrentlyContainedMats = new HashSet<ThingDef>();
 
         /// <summary>[PERSISTENT] The value of already processed mats that is readily available</summary>
         protected float ProcessedMat;
@@ -35,26 +36,26 @@ namespace Wolfsblvt.ModularNutrientDispenser
         /// <summary>[DEF] Defined in the def will be the thing that can be dispensed. Strongly connected to <see cref="StatForDispensable" />.</summary>
         public override ThingDef DispensableDef => dispenserComp.Props.dispensableDef;
 
-        /// <summary>[STAT] The maximum capacity of the processed material. A stat that can be modified.</summary>
-        protected float ProcessedMatCapacity => this.GetStatValue(WolfDefOf.ProcessedMatCapacity);
-
-        /// <summary>[STAT] The amount of the mat that can be pulled in per day. Will be split onto each <see cref="TickRare" />. A stat that can be modified.</summary>
-        protected float RawMatPullPerDay => this.GetStatValue(WolfDefOf.RawMatPullPerDay);
-
-        /// <summary>[STAT] The Maximum amount of the mat that can be pulled in per <see cref="TickRare" />. A stat that can be modified.</summary>
-        protected float MaxRawMatPerPull => this.GetStatValue(WolfDefOf.MaxRawMatPerPull);
-
         /// <summary>[DEF] The stat that will be used as a material base.</summary>
-        protected StatDef StatForDispensable => dispenserComp.Props.statForDispensable;
+        public StatDef StatForDispensable => dispenserComp.Props.statForDispensable;
 
         /// <summary>[DEF] The conversion rate how much of the stat from the raw material will be converted into the stat of the target material.</summary>
-        protected float MatConversion => dispenserComp.Props.matConversion;
+        public float MatConversion => dispenserComp.Props.matConversion;
 
-        protected virtual float DispensableMatRawCost => DispensableMatResultCost / MatConversion;
-        protected virtual float DispensableMatResultCost => DispensableDef.GetStatValueAbstract(StatForDispensable);
-        protected virtual int DispensableAvailable => (int) Mathf.Floor(ProcessedMat / DispensableMatResultCost);
+        /// <summary>[STAT] The maximum capacity of the processed material. A stat that can be modified.</summary>
+        public float ProcessedMatCapacity => this.GetStatValue(WolfDefOf.ProcessedMatCapacity);
 
-        protected virtual bool CanProcess => powerComp.PowerOn && ProcessedMat < ProcessedMatCapacity;
+        /// <summary>[STAT] The amount of the mat that can be pulled in per day. Will be split onto each <see cref="TickRare" />. A stat that can be modified.</summary>
+        public float RawMatPullPerDay => this.GetStatValue(WolfDefOf.RawMatPullPerDay);
+
+        /// <summary>[STAT] The Maximum amount of the mat that can be pulled in per <see cref="TickRare" />. A stat that can be modified.</summary>
+        public float MaxRawMatPerPull => this.GetStatValue(WolfDefOf.MaxRawMatPerPull);
+
+        public virtual float DispensableMatRawCost    => DispensableMatResultCost / MatConversion;
+        public virtual float DispensableMatResultCost => DispensableDef.GetStatValueAbstract(StatForDispensable);
+        public virtual int   DispensableAvailable     => (int) Mathf.Floor(ProcessedMat / DispensableMatResultCost);
+
+        public virtual bool CanProcess => powerComp.PowerOn && ProcessedMat < ProcessedMatCapacity;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -148,8 +149,6 @@ namespace Wolfsblvt.ModularNutrientDispenser
             if (CanProcess)
                 sb.Append($" (+{RawMatPullPerDay.ToStringDecimalIfSmall()} per day)");
             sb.AppendLine();
-
-
 
             // Available dispensable items: 3 (+3.3 per day)
             sb.Append($"Available {dispensableName}: {DispensableAvailable}");

@@ -31,10 +31,12 @@ namespace Wolfsblvt.ModularNutrientDispenser
                     // Most generic checks
                     if (method.IsStatic || method.IsConstructor || method.ReturnType != typeof(bool))
                         return false;
+
                     // Parameter must be Thing
                     var parms = method.GetParameters();
                     if (parms.Length != 1 || parms[0].ParameterType != typeof(Thing))
                         return false;
+
                     // Okay, now it gets more complicated. We have to check if this delegate starts with our relevant instructions.
                     // We only take the first 20 statements, to save some performance. If it doesn't popup there, it shouldn't be this one.
                     // Or we have to fix the transpiler anyway.
@@ -44,6 +46,7 @@ namespace Wolfsblvt.ModularNutrientDispenser
                         {
                             if (x.Key != OpCodes.Isinst)
                                 return false;
+
                             var inst = new CodeInstruction(x.Key, x.Value);
                             return inst.OperandIs(typeof(Building_NutrientPasteDispenser));
                         });

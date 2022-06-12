@@ -19,7 +19,6 @@ namespace Wolfsblvt.ModularNutrientDispenser
         /// <summary>[DEF] The conversion rate how much of the stat from the raw material will be converted into the stat of the target material.</summary>
         public float matConversion;
 
-
         public CompProperties_Dispenser()
         {
             compClass = typeof(CompDispenser);
