@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using RimWorld;
 using UnityEngine;
@@ -23,6 +21,8 @@ namespace Wolfsblvt.ModularNutrientDispenser
     [UsedImplicitly]
     public class Building_ExtendableNutrientPasteDispenser : Building_NutrientPasteDispenser
     {
+        [NotNull] protected readonly HashSet<ThingDef> CurrentlyContainedMats = new HashSet<ThingDef>();
+
         /// <summary>[PERSISTENT] The value of already processed mats that is readily available</summary>
         protected float ProcessedMat;
 
@@ -32,11 +32,11 @@ namespace Wolfsblvt.ModularNutrientDispenser
         /// <summary>[STAT] The maximum capacity of the processed material. A stat that can be modified.</summary>
         protected float ProcessedMatCapacity => 10f; // Hardcoded at the moment. Will come out of the def with a stat later
 
-        /// <summary>[STAT] The amount of the mat that can be pulled in per <see cref="TickRare" />. A stat that can be modified.</summary>
-        protected float RawMatPullPerTick => 0.002f; // Hardcoded at the moment. Will come out of the def with a stat later
+        /// <summary>[STAT] The amount of the mat that can be pulled in per day. Will be split onto each <see cref="TickRare" />. A stat that can be modified.</summary>
+        protected float RawMatPullPerDay => 1f; // Hardcoded at the moment. Will come out of the def with a stat later
 
-        /// <summary>[STAT] The exact amount of units that will be pulled for a stack at maximum. A stat that can be modified.</summary>
-        protected float RawMatPullCapacityPerHopper => 0.25f; // Hardcoded at the moment. Will come out of the def with a stat later
+        /// <summary>[STAT] The Maximum amount of the mat that can be pulled in per <see cref="TickRare" />. A stat that can be modified.</summary>
+        protected float MaxRawMatPull => 0.5f; // Hardcoded at the moment. Will come out of the def with a stat later
 
         /// <summary>[DEF] The stat that will be used as a material base.</summary>
         protected StatDef StatForDispensable => StatDefOf.Nutrition;
@@ -46,8 +46,6 @@ namespace Wolfsblvt.ModularNutrientDispenser
 
         /// <summary>[DEF] The conversion rate how much of the stat from the raw material will be converted into the stat of the target material.</summary>
         protected float MatConversion => 3.0f; // Hardcoded at the moment. Will come out of the def with a stat later
-        
-        [NotNull] protected readonly HashSet<ThingDef> CurrentlyContainedMats = new HashSet<ThingDef>();
 
         protected virtual float DispensableMatRawCost => DispensableMatResultCost / MatConversion;
         protected virtual float DispensableMatResultCost => DispensableDef.GetStatValueAbstract(StatForDispensable);
@@ -78,6 +76,7 @@ namespace Wolfsblvt.ModularNutrientDispenser
         public override Thing FindFeedInAnyHopper()
         {
             // Currently we are still working with food, so the base call works. In the future, we want o be able to use the stats based on StatForDispensable.
+            Log.Warning("This is a legacy method from vanilla, that shouldn't be called anymore.");
             return base.FindFeedInAnyHopper();
         }
 
@@ -99,13 +98,18 @@ namespace Wolfsblvt.ModularNutrientDispenser
             // Okay, so what we do might sound complicated. But it's easy.
             // With every tick, the "power" to pull raw material in increases.
             // We have that value because most likely raw material can't be pulled into on each tick, so we have to keep track how often we want and can do it
+            if (powerComp.PowerOn)
+            {
+                const float rareTicksPerDay = (float)GenDate.TicksPerDay / GenTicks.TickRareInterval;
+                var pullPerRareTick = RawMatPullPerDay / rareTicksPerDay;
 
-            // The power itself increases by the defined stat behind. We still limit it somewhere, to prevent overflows.
-            RawMatPullPower += RawMatPullPower.AddCapped(RawMatPullPerTick, ProcessedMatCapacity);
+                // So on each tick we increase the pull power by a calculated value. We limit it somewhere still we can't shlurp in all at once.
+                RawMatPullPower = RawMatPullPower.AddCapped(pullPerRareTick, MaxRawMatPull);
 
-            // Then the main processing starts.
-            // If we got enough to pull something in, we do it here
-            TryProcessIngredients();
+                // Then the main processing starts.
+                // If we got enough to pull something in, we do it here
+                TryProcessIngredients();
+            }
 
             Log.Warning($"Dispenser Tick. Progress: {ProcessedMat}");
         }
@@ -125,9 +129,12 @@ namespace Wolfsblvt.ModularNutrientDispenser
                 sb.AppendLine();
 
             sb.AppendLine($"Contains {ProcessedMat.ToStringDecimalIfSmall()} / {ProcessedMatCapacity} {StatForDispensable.label}.");
-            sb.AppendLine($"Progress: {(ProcessedMat / ProcessedMatCapacity).ToStringPercent()} (___ left)");
+            //sb.AppendLine($"Progress: {(ProcessedMat / ProcessedMatCapacity).ToStringPercent()} (___ left)");
 
             sb.AppendLine($"Available {Find.ActiveLanguageWorker.Pluralize(DispensableDef.label, DispensableAvailable)}: {DispensableAvailable}");
+
+            if (Prefs.DevMode)
+                sb.AppendLine($"Pull power: {RawMatPullPower}");
 
             return sb.ToString().TrimEndNewlines();
         }
@@ -141,83 +148,54 @@ namespace Wolfsblvt.ModularNutrientDispenser
 
         protected virtual bool TryProcessIngredients()
         {
-            // Only returns a list of raw ingredients if there is enough available
-            var rawIngredients = TryGrabRawIngredients(RawMatPullPower);
-            
-            // Not enough available for that processing here
-            if (rawIngredients == null)
+            // If we are already at full capacity, we can't process more
+            if (ProcessedMat >= ProcessedMatCapacity)
                 return false;
 
-            // If we have enough available, we pull here until we reach exactly it.
-            // We are just pulling right away, as we are sure there is enough available. Otherwise the method would've responded with null.
-            var pullPower = RawMatPullPower;
-            foreach (var ingredient in rawIngredients)
-            {
-                var ingredientStatValue = ingredient.GetStatValue(StatForDispensable);
-                var stackContainsStat = ingredient.stackCount * ingredientStatValue;
+            // Only returns an ingredient if there is one available
+            var ingredient = TryGrabRawIngredient();
+            if (ingredient == null)
+                return false;
 
-                // We have to limit how much we can pull from one hopper at max
-                var canPullStat = Math.Min(stackContainsStat, RawMatPullCapacityPerHopper);
+            var statValue = ingredient.GetStatValue(StatForDispensable);
 
-                // If we got enough on that stack for what we want to pull
-                // If not, we pull as much as we can from that stack and check the next ingredient
-                int amount;
-                if (canPullStat >= pullPower)
-                    amount = Mathf.FloorToInt(pullPower / ingredientStatValue);
-                else
-                    amount = ingredient.stackCount;
+            // Calculate how much of that mat we could pull. Don't go further that the stack size though
+            var amount = Mathf.FloorToInt(RawMatPullPower / statValue).Cap(ingredient.stackCount);
 
-                // We pull as much as is available here. And check after if this was enough.
-                ProcessAndUseRawMat(ingredient, amount);
-                pullPower -= amount * ingredientStatValue;
+            // And don't pull more than we need to reach max capacity
+            var remainingCapacity = ProcessedMatCapacity - ProcessedMat;
+            var amountToCapacity = Mathf.CeilToInt(remainingCapacity / statValue);
+            if (amount > amountToCapacity)
+                amount = amountToCapacity;
 
-                // We can stop here if we got enough on that stack for what we want to pull
-                if (stackContainsStat >= pullPower)
-                    break;
-            }
-            
-            RawMatPullPower = pullPower;
-            Log.Message($"Pulled until a remaining power of {pullPower}");
+            ProcessAndUseRawMat(ingredient, amount);
+
+            // Pull power gets reduced by the amount we pulled
+            RawMatPullPower -= amount * statValue;
+            Log.Message($"Pulled until a remaining power of {RawMatPullPower}");
 
             return true;
         }
 
         [Pure]
         [CanBeNull]
-        protected virtual IEnumerable<Thing> TryGrabRawIngredients(float amount)
+        protected virtual Thing TryGrabRawIngredient()
         {
             // We are doing a simple ordering on smallest stack size, so that we empty mostly empty hoppers first.
-            var possibleIngredients = IngredientsInHoppers()
-                .OrderBy(x => x.stackCount);
+            // We don't want to take the first available which is possible right now, we really wait for the first one, until we have the capacity to do so.
+            var ingredient = IngredientsInHoppers()
+                .OrderBy(x => x.stackCount)
+                .FirstOrDefault();
 
-            var grabbedThings = new List<Thing>();
-            var totalGrabbedMatCount = 0f;
+            if (ingredient == null)
+                return null;
 
-            foreach (var ingredient in possibleIngredients)
-            {
-                // We need to stop here if we are over the maximum capacity we can pull at all
-                if (totalGrabbedMatCount >= ProcessedMatCapacity)
-                    break;
+            // Check how much mats that ingredient has. If it's too much to pull in, we can't return it.
+            var statValue = ingredient.GetStatValue(StatForDispensable);
+            if (statValue > RawMatPullPower)
+                return null;
 
-                // We also need to stop if a single ingredient is needing more than the amount is we can maximally get
-                var statValue = ingredient.GetStatValue(StatForDispensable);
-                if (statValue > amount)
-                    break;
-
-                // No matter how many items we grab from this thing, we take at least one here so we are registering it
-                grabbedThings.Add(ingredient);
-
-                var stackContainsStat = ingredient.stackCount * statValue;
-                var canPullStat = Math.Min(stackContainsStat, RawMatPullCapacityPerHopper);
-
-                totalGrabbedMatCount += canPullStat;
-
-                // We can stop here if we got enough, of course
-                if (totalGrabbedMatCount >= amount)
-                    break;
-            }
-
-            return totalGrabbedMatCount >= amount ? grabbedThings : null;
+            return ingredient;
         }
 
         [Pure]
@@ -233,7 +211,7 @@ namespace Wolfsblvt.ModularNutrientDispenser
                 {
                     if (IsAcceptableRawMat(thing))
                         matInHopper = thing;
-                    
+
                     if (thing.def == ThingDefOf.Hopper)
                         hopper = thing;
                 }
@@ -246,7 +224,10 @@ namespace Wolfsblvt.ModularNutrientDispenser
         protected virtual void ProcessAndUseRawMat([NotNull] Thing mat, int count)
         {
             if (count > mat.stackCount)
+            {
                 Log.Error("Can't call the process method of a count lower than the stack contains.");
+                return;
+            }
 
             if (count == 0)
                 return;
@@ -256,7 +237,7 @@ namespace Wolfsblvt.ModularNutrientDispenser
             CurrentlyContainedMats.Add(mat.def);
 
             var resultingMats = mat.GetStatValue(StatForDispensable) * count * MatConversion;
-            
+
             ProcessedMat = ProcessedMat.AddCapped(resultingMats, ProcessedMatCapacity);
         }
 

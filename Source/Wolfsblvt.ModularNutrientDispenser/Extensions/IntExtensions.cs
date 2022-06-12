@@ -4,9 +4,9 @@ using JetBrains.Annotations;
 namespace Wolfsblvt.ModularNutrientDispenser.Extensions
 {
     /// <summary>
-    ///     A class containing helpful extensions for <see cref="float" />.
+    ///     A class containing helpful extensions for <see cref="int" />.
     /// </summary>
-    public static class FloatExtensions
+    public static class IntExtensions
     {
         /// <summary>
         ///     Caps a number at a given maximum.
@@ -15,7 +15,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Extensions
         /// <param name="cap">The maximum it can reach</param>
         /// <returns>The resulting number</returns>
         [Pure]
-        public static float Cap(this float number, float cap)
+        public static int Cap(this int number, int cap)
         {
             return Math.Min(number, cap);
         }
@@ -31,7 +31,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Extensions
         /// <param name="doNotAddPartial">If true the value will only be added if it doesn't exceed the cap</param>
         /// <returns>The final result value after the addition</returns>
         [Pure]
-        public static float AddCapped(this float start, float add, float cap, bool doNotAddPartial = false)
+        public static int AddCapped(this int start, int add, int cap, bool doNotAddPartial = false)
         {
             // Special check for not adding partial values, only the full 'subtract'
             if (doNotAddPartial && start + add > cap)
@@ -51,7 +51,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Extensions
         /// <param name="doNotSubtractPartial">If true the value will only be subtracted if it doesn't exceed the cap</param>
         /// <returns>The final result value after the subtraction</returns>
         [Pure]
-        public static float SubtractCapped(this float start, float subtract, float cap, bool doNotSubtractPartial = false)
+        public static int SubtractCapped(this int start, int subtract, int cap, bool doNotSubtractPartial = false)
         {
             // Special check for not adding partial values, only the full 'subtract'
             if (doNotSubtractPartial && start + subtract > cap)

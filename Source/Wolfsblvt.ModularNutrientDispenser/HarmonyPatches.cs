@@ -10,6 +10,7 @@ using Wolfsblvt.ModularNutrientDispenser.Patches;
 namespace Wolfsblvt.ModularNutrientDispenser
 {
     [StaticConstructorOnStartup]
+    [UsedImplicitly]
     [SuppressMessage("ReSharper", "RedundantAssignment", Justification = "Harmony parameters are predefined by name. We just use them")]
     public static class HarmonyPatches
     {
