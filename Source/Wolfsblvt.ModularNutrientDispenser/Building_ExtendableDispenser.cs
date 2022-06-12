@@ -138,13 +138,24 @@ namespace Wolfsblvt.ModularNutrientDispenser
         {
             var sb = new StringBuilder(base.GetInspectString());
 
+            var dispensableName = Find.ActiveLanguageWorker.Pluralize(DispensableDef.label, DispensableAvailable);
+
             if (sb.Length > 0)
                 sb.AppendLine();
 
-            sb.AppendLine($"Contains {ProcessedMat.ToStringDecimalIfSmall()} / {ProcessedMatCapacity} {StatForDispensable.label}.");
-            //sb.AppendLine($"Progress: {(ProcessedMat / ProcessedMatCapacity).ToStringPercent()} (___ left)");
+            // Contains 2/10 processed stat. (+1 per day)
+            sb.Append($"Contains {ProcessedMat.ToStringDecimalIfSmall()} / {ProcessedMatCapacity} {StatForDispensable.label}.");
+            if (CanProcess)
+                sb.Append($" (+{RawMatPullPerDay.ToStringDecimalIfSmall()} per day)");
+            sb.AppendLine();
 
-            sb.AppendLine($"Available {Find.ActiveLanguageWorker.Pluralize(DispensableDef.label, DispensableAvailable)}: {DispensableAvailable}");
+
+
+            // Available dispensable items: 3 (+3.3 per day)
+            sb.Append($"Available {dispensableName}: {DispensableAvailable}");
+            if (CanProcess)
+                sb.Append($" (+{(RawMatPullPerDay / DispensableMatRawCost).ToStringDecimalIfSmall()} per day)");
+            sb.AppendLine();
 
             if (Prefs.DevMode)
                 sb.AppendLine($"Pull power: {RawMatPullPower}");
