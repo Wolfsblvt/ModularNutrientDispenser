@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <StatDef>
+    <defName>WOLF_ProcessedMatCapacity</defName>
+    <label>processed material capacity</label>
+    <description>The maximum amount of processed material which can be held.</description>
+    <category>Building</category>
+    <defaultBaseValue>10</defaultBaseValue>
+    <minValue>0</minValue>
+    <toStringStyle>FloatMaxTwo</toStringStyle>
+    <showIfUndefined>false</showIfUndefined>
+    <displayPriorityInCategory>3000</displayPriorityInCategory>
+  </StatDef>
+  <StatDef>
+    <defName>WOLF_RawMatPullPerDay</defName>
+    <label>raw material pull power</label>
+    <description>The power how much raw material can be pulled and processed per day.</description>
+    <category>Building</category>
+    <defaultBaseValue>1</defaultBaseValue>
+    <minValue>0</minValue>
+    <toStringStyle>FloatMaxTwo</toStringStyle>
+    <showIfUndefined>false</showIfUndefined>
+    <displayPriorityInCategory>3000</displayPriorityInCategory>
+  </StatDef>
+  <StatDef>
+    <defName>WOLF_MaxRawMatPerPull</defName>
+    <label>raw material pull limit</label>
+    <description>The maximum how much raw material can be pulled at once.</description>
+    <category>Building</category>
+    <defaultBaseValue>0.5</defaultBaseValue>
+    <minValue>0</minValue>
+    <toStringStyle>FloatMaxTwo</toStringStyle>
+    <showIfUndefined>false</showIfUndefined>
+    <displayPriorityInCategory>3000</displayPriorityInCategory>
+  </StatDef>
+</Defs>

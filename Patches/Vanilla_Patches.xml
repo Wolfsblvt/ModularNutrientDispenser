@@ -32,7 +32,7 @@
       <li Class="PatchOperationAdd">
         <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/comps</xpath>
         <value>
-          <li Class="Wolfsblvt.ModularNutrientDispenser.CompProperties_Dispensable">
+          <li Class="Wolfsblvt.ModularNutrientDispenser.CompProperties_Dispenser">
             <dispensableDef>MealNutrientPaste</dispensableDef>
             <statForDispensable>Nutrition</statForDispensable>
             <matConversion>3.0</matConversion>
@@ -40,5 +40,14 @@
         </value>
       </li>
     </operations>
+  </Operation>
+  <!-- Now add the stat abilities to the vanilla dispenser -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="NutrientPasteDispenser"]/statBases</xpath>
+    <value>
+      <WOLF_ProcessedMatCapacity>10</WOLF_ProcessedMatCapacity>
+      <WOLF_RawMatPullPerDay>1</WOLF_RawMatPullPerDay>
+      <WOLF_MaxRawMatPerPull>0.5</WOLF_MaxRawMatPerPull>
+    </value>
   </Operation>
 </Patch>

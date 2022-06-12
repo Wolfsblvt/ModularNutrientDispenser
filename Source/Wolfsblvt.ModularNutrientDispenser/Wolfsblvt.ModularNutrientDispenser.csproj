@@ -64,6 +64,7 @@
     <Compile Include="Patches\ThingListGroupHelper_Patch.cs" />
     <Compile Include="StartupHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WolfDefOf.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

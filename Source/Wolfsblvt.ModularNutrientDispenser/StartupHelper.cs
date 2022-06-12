@@ -3,8 +3,8 @@ using Verse;
 
 namespace Wolfsblvt.ModularNutrientDispenser
 {
-    [UsedImplicitly]
     [StaticConstructorOnStartup]
+    [UsedImplicitly]
     public static class StartupHelper
     {
         static StartupHelper()

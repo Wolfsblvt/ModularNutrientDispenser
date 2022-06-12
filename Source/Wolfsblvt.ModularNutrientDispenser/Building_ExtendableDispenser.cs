@@ -32,17 +32,17 @@ namespace Wolfsblvt.ModularNutrientDispenser
         /// <summary>[PERSISTENT] An internal number showing how much raw mats the dispenser can pull in. It's there to limit which kind of mats can be pulled in on which ticks.</summary>
         protected float RawMatPullPower;
 
-        /// <summary>[STAT] The maximum capacity of the processed material. A stat that can be modified.</summary>
-        protected float ProcessedMatCapacity = 10f; // Hardcoded at the moment. Will come out of the def with a stat later
-
-        /// <summary>[STAT] The amount of the mat that can be pulled in per day. Will be split onto each <see cref="TickRare" />. A stat that can be modified.</summary>
-        protected float RawMatPullPerDay = 1f; // Hardcoded at the moment. Will come out of the def with a stat later
-
-        /// <summary>[STAT] The Maximum amount of the mat that can be pulled in per <see cref="TickRare" />. A stat that can be modified.</summary>
-        protected float MaxRawMatPull = 0.5f; // Hardcoded at the moment. Will come out of the def with a stat later
-
         /// <summary>[DEF] Defined in the def will be the thing that can be dispensed. Strongly connected to <see cref="StatForDispensable" />.</summary>
         public override ThingDef DispensableDef => dispenserComp.Props.dispensableDef;
+
+        /// <summary>[STAT] The maximum capacity of the processed material. A stat that can be modified.</summary>
+        protected float ProcessedMatCapacity => this.GetStatValue(WolfDefOf.ProcessedMatCapacity);
+
+        /// <summary>[STAT] The amount of the mat that can be pulled in per day. Will be split onto each <see cref="TickRare" />. A stat that can be modified.</summary>
+        protected float RawMatPullPerDay => this.GetStatValue(WolfDefOf.RawMatPullPerDay);
+
+        /// <summary>[STAT] The Maximum amount of the mat that can be pulled in per <see cref="TickRare" />. A stat that can be modified.</summary>
+        protected float MaxRawMatPerPull => this.GetStatValue(WolfDefOf.MaxRawMatPerPull);
 
         /// <summary>[DEF] The stat that will be used as a material base.</summary>
         protected StatDef StatForDispensable => dispenserComp.Props.statForDispensable;
@@ -52,7 +52,9 @@ namespace Wolfsblvt.ModularNutrientDispenser
 
         protected virtual float DispensableMatRawCost => DispensableMatResultCost / MatConversion;
         protected virtual float DispensableMatResultCost => DispensableDef.GetStatValueAbstract(StatForDispensable);
-        protected virtual int DispensableAvailable => (int)Mathf.Floor(ProcessedMat / DispensableMatResultCost);
+        protected virtual int DispensableAvailable => (int) Mathf.Floor(ProcessedMat / DispensableMatResultCost);
+
+        protected virtual bool CanProcess => powerComp.PowerOn && ProcessedMat < ProcessedMatCapacity;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -111,16 +113,16 @@ namespace Wolfsblvt.ModularNutrientDispenser
             // We have that value because most likely raw material can't be pulled into on each tick, so we have to keep track how often we want and can do it
             if (powerComp.PowerOn)
             {
-                const float rareTicksPerDay = (float)GenDate.TicksPerDay / GenTicks.TickRareInterval;
+                const float rareTicksPerDay = (float) GenDate.TicksPerDay / GenTicks.TickRareInterval;
                 var pullPerRareTick = RawMatPullPerDay / rareTicksPerDay;
 
                 // So on each tick we increase the pull power by a calculated value. We limit it somewhere still we can't shlurp in all at once.
-                RawMatPullPower = RawMatPullPower.AddCapped(pullPerRareTick, MaxRawMatPull);
-
-                // Then the main processing starts.
-                // If we got enough to pull something in, we do it here
-                TryProcessIngredients();
+                RawMatPullPower = RawMatPullPower.AddCapped(pullPerRareTick, MaxRawMatPerPull);
             }
+
+            // Then the main processing starts.
+            // If we got enough to pull something in, we do it here
+            TryProcessIngredients();
 
             Log.Warning($"Dispenser Tick. Progress: {ProcessedMat}");
         }
@@ -197,7 +199,7 @@ namespace Wolfsblvt.ModularNutrientDispenser
         protected virtual bool TryProcessIngredients()
         {
             // If we are already at full capacity, we can't process more
-            if (ProcessedMat >= ProcessedMatCapacity)
+            if (!CanProcess)
                 return false;
 
             // Only returns an ingredient if there is one available
