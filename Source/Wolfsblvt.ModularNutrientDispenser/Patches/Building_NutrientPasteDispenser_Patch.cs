@@ -9,7 +9,7 @@ namespace Wolfsblvt.ModularNutrientDispenser.Patches
     public static class Building_NutrientPasteDispenser_Patch
     {
         /// <summary>
-        ///     Applying Prefix to <see cref="Building_ExtendableNutrientPasteDispenser" />.<see cref="Building_NutrientPasteDispenser.CanDispenseNow" />.
+        ///     Applying Prefix to <see cref="Building_NutrientPasteDispenser" />.<see cref="Building_NutrientPasteDispenser.CanDispenseNow" />.
         ///     <para />
         ///     We remove the vanilla logic here that the dispenser has to have power to dispense. Only important value is if there is enough feed.
         /// </summary>

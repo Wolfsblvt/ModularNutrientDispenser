@@ -19,7 +19,7 @@ namespace Wolfsblvt.ModularNutrientDispenser
     ///     The dispenser itself keeps track of how many raw mats are processed, and how many raw ingredients it can currently pull in.
     /// </summary>
     [UsedImplicitly]
-    public class Building_ExtendableNutrientPasteDispenser : Building_NutrientPasteDispenser
+    public class Building_ExtendableDispenser : Building_NutrientPasteDispenser
     {
         [NotNull] protected readonly HashSet<ThingDef> CurrentlyContainedMats = new HashSet<ThingDef>();
 
